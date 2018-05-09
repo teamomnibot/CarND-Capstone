@@ -1,14 +1,11 @@
 ## Team Omnibot
 > members:
-@nery_henrique Planning: Waypoint Updater
 
-@sdominic Control: DBW Node
-
-@davinderc Perception: TL Classifier
-
-@keithlee Perception: TL Detector
-
-@tochalid Repo: Integration
+*@nery_henrique Planning: Waypoint Updater
+*@sdominic Control: DBW Node
+*@davinderc Perception: TL Classifier
+*@keithlee Perception: TL Detector
+*@tochalid Repo: Integration
 
 ### updates will follow soon
 
