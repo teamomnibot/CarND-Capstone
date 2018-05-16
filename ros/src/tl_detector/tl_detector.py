@@ -100,8 +100,9 @@ class TLDetector(object):
             int: index of the closest waypoint in self.waypoints
 
         """
-        #TODO implement
-        return 0
+        #TODO
+        closest_idx = self.waypoint_tree.query([pose.position.x,pose.position.y,1)[1]
+        return closest_idx
 
     def get_light_state(self, light):
         """Determines the current color of the traffic light
@@ -127,23 +128,34 @@ class TLDetector(object):
             location and color
 
         Returns:
-            int: index of waypoint closes to the upcoming stop line for a traffic light (-1 if none exists)
+            int: index of waypoint closest to the upcoming stop line for a traffic light (-1 if none exists)
             int: ID of traffic light color (specified in styx_msgs/TrafficLight)
 
         """
-        light = None
+        closest_light = None  # closest traffic light
+        line_wp_idx = None  # index of the nearest waypoint of the stop line
 
         # List of positions that correspond to the line to stop in front of for a given intersection
         stop_line_positions = self.config['stop_line_positions']
         if(self.pose):
-            car_position = self.get_closest_waypoint(self.pose.pose)
+            car_wp_idx = self.get_closest_waypoint(self.pose.pose)
 
         #TODO find the closest visible traffic light (if one exists)
-
-        if light:
-            state = self.get_light_state(light)
-            return light_wp, state
-        self.waypoints = None
+        diff = len(self.waypoints.waypoints)
+        for i,light in enumerate(self.lights):
+            #Get the stop line waypoint index
+            line = stop_line_positions[i]   #each traffic light corresponds to a stop line
+            temp_wp_index = self.get_closest_waypoint(line)
+            #Find the closest stop line waypoint index
+            d = temp_wp_index - car_wp_idx
+            if d > 0 and  d< diff:
+                diff = d
+                closest_light = light
+                line_wp_idx = temp_wp_index
+        if closest_light:
+            state = self.get_light_state(closest_light)
+            return line_wp_idx, state
+        
         return -1, TrafficLight.UNKNOWN
 
 if __name__ == '__main__':
