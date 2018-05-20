@@ -1,9 +1,14 @@
 from styx_msgs.msg import TrafficLight
+import numpy as np
 import tensorflow as tf
+from datetime import datetime as dt
 
 class TLClassifier(object):
     def __init__(self, sim_true):
         #TODO load classifier
+
+        self.thresh = 0.65
+
         if sim_true:
             GRAPH_PATH = r'light_classification/model/inf_graph_sim.pb'
         else:
@@ -42,10 +47,10 @@ class TLClassifier(object):
         
         with self.graph.as_default():
             img_expand = np.expand_dims(image, axis=0)
-            start = datetime.datetime.now()
+            start = dt.now()
             (boxes, scores, classes, num_detections) = self.sess.run(
                 [self.boxes, self.scores, self.classes, self.num_detections], feed_dict={self.image_tensor: img_expand})
-            end = datetime.datetime.now()
+            end = dt.now()
             duration = end - start
             print(duration.total_seconds())
         
