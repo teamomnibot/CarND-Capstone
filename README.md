@@ -6,7 +6,7 @@ This is the **system integration** project repo of Team Omnibot programming a re
 ## Project Team
 
 |Name|Github|Contribution|Email
-|---|---|--- 
+|---|---|---|--- 
 |Henrique Nery (TL)|[@nery_henrique]()|Waypointer|
 |Dominic S|[@sdominic](https://github.com/sdominic)|DBW Node|
 |Davinder Chandhok|[@davinderc](https://github.com/davinderc)|Classifier|davinder.sc1@gmail.com
