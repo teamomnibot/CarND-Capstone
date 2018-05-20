@@ -7,10 +7,10 @@ This is the **system integration** project repo of Team Omnibot programming a re
 
 |Name|Github|Contribution|Email
 |---|---|---|--- 
-|Henrique Nery (TL)|[@nery_henrique]()|Waypointer|
-|Dominic S|[@sdominic](https://github.com/sdominic)|DBW Node|
+|Henrique Nery (TL)|[nery_henrique@hotmail.com](https://github.com/nery_henrique@hotmail.com)|Waypointer|
+|Dominic S|[@sdshdomi](https://github.com/sdshdomi)|DBW Node|
 |Davinder Chandhok|[@davinderc](https://github.com/davinderc)|Classifier|davinder.sc1@gmail.com
-|Keith Lee| [@keithlee](https://github.com/keithlee)|Detector|
+|Keith Lee| [@TonyLee33063](https://github.com/TonyLee33063)|Detector|
 |Chalid Mannaa|[@tochalid](https://github.com/tochalid)|Integration|tochalid@gmail.com
 
 ## Project Goal
@@ -48,7 +48,7 @@ The purpose of this node is to update the target velocity property of each waypo
 
 ![Image](./pics/dbw-node-ros-graph.png)
 
-The dbw_node subscribes to the `/current_velocity` topic along with the `/twist_cmd` topic to receive target linear and angular velocities. Additionally, this node will subscribe to `/vehicle/dbw_enabled`, which indicates if the car is under dbw or driver control. This node will publish throttle, brake, and steering commands to the `/vehicle/throttle_cmd, /vehicle/brake_cmd, and /vehicle/steering_cmd` topics.
+The `dbw_node` subscribes to the `/current_velocity` topic along with the `/twist_cmd` topic to receive target linear and angular velocities. Additionally, this node will subscribe to `/vehicle/dbw_enabled`, which indicates if the car is under dbw or driver control. This node will publish throttle, brake, and steering commands to the `/vehicle/throttle_cmd, /vehicle/brake_cmd, and /vehicle/steering_cmd` topics.
 
 ### Team approach
 
@@ -71,6 +71,12 @@ Following requirements must be fulfilled in the simulator.
 4. Stop at traffic lights when needed.
 5. Stop and restart PID controllers depending on the state of /vehicle/dbw_enabled.
 6. Publish throttle, steering, and brake commands at 50hz.
+
+## Further Used References
+
+* [Traffic Light Detection and Classification](https://medium.com/@UdacityINDIA/self-driving-vehicles-traffic-light-detection-and-classification-with-tensorflow-object-detection-d6a4d25e99c2)
+* [Tensorflow Object Detection](https://github.com/tensorflow/models/tree/master/research/object_detection/g3doc)
+* [Github Commands](https://help.github.com/articles/adding-a-file-to-a-repository-using-the-command-line/)
 
 ##  Environment 
 
