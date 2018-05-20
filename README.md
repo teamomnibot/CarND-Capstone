@@ -3,19 +3,76 @@
 
 This is the **system integration** project repo of Team Omnibot programming a real self-driving car. Boilerplate code and instructions from [Udacity: CarND-Capstone](https://github.com/udacity/CarND-Capstone). Team members are from July 2017 cohort accomplishing the final term 3 project due May 21st, 2018. 
 
-> The team has following members:
+## Project Team
 
-|Name|Github|Contribution
+|Name|Github|Contribution|Email
 |---|---|--- 
-|Henrique (TL)|[@nery_henrique]()|Waypointer
-|Dominic|[@sdominic](https://github.com/sdominic)|DBW Node
-|Davinder Chandhok|[@davinderc](https://github.com/davinderc)|Classifier
-|Keith Lee| [@keithlee](https://github.com/keithlee)|Detector
-|Chalid Mannaa|[@tochalid](https://github.com/tochalid)|Integration
+|Henrique Nery (TL)|[@nery_henrique]()|Waypointer|
+|Dominic S|[@sdominic](https://github.com/sdominic)|DBW Node|
+|Davinder Chandhok|[@davinderc](https://github.com/davinderc)|Classifier|davinder.sc1@gmail.com
+|Keith Lee| [@keithlee](https://github.com/keithlee)|Detector|
+|Chalid Mannaa|[@tochalid](https://github.com/tochalid)|Integration|tochalid@gmail.com
 
-### updates will follow soon
+## Project Goal
+The goal is to implement different ROS nodes for core functionality of the autonomous drive-by-wire (dbw) vehicle system, including traffic light detection, control, and waypoint following, and run the code on Udacity self driving car ["Carla"](https://medium.com/udacity/how-the-udacity-self-driving-car-works-575365270a40). The code will be tested on [simulator](https://github.com/udacity/CarND-Capstone/releases) first, then on Carla. The key features are:
 
-This is the project repo for the final project of the Udacity Self-Driving Car Nanodegree: Programming a Real Self-Driving Car. For more information about the project, see the project introduction [here](https://classroom.udacity.com/nanodegrees/nd013/parts/6047fe34-d93c-4f50-8336-b70ef10cb4b2/modules/e1a23b06-329a-4684-a717-ad476f0d8dff/lessons/462c933d-9f24-42d3-8bdc-a08a5fc866e4/concepts/5ab4b122-83e6-436d-850f-9f4d26627fd9).
+* Detection of traffic lights colours - RED, YELLOW, GREEN
+* Stopping car on RED, moving on GREEN, ignore YELLOW
+* Following waypoints sending the control command on drive-by-wire, for throttle, brake, and steering
+
+## Solution
+
+![Image](./pics/system.png)
+
+The system architecture consists of Perception, Planning and Control nodes that communicate via function calls. All code base can be found in the source folder `(path_to_project_repo)/ros/src/` and improvements where made to following files:
+
+- `tl_detector/tl_detector.py`
+- `tl_detector/light_classification_model/tl_classfier.py`
+- `waypointer_updater/waypoint_updater.py`
+- `twist_controller/dbw_node.py`
+- `twist_controller/twist_controller.py`
+
+### Traffic Light Detection Node
+
+![Image](./pics/tl-detector-ros-graph.png)
+
+This node takes in data from the `/image_color, /current_pose, and /base_waypoints` topics and publishes the locations to stop for red traffic lights to the `/traffic_waypoint` topic. The `/current_pose` topic provides the vehicle's current position, and `/base_waypoints` provides a complete list of waypoints the car will be following.
+
+### Waypoint Updater Node
+
+![Image](./pics/waypoint-updater-ros-graph.png)
+
+The purpose of this node is to update the target velocity property of each waypoint based on traffic light and obstacle detection data. This node will subscribe to the `/base_waypoints, /current_pose, /obstacle_waypoint, and /traffic_waypoint` topics, and publish a list of waypoints ahead of the car with target velocities to the `/final_waypoints` topic.
+
+### DBW Node
+
+![Image](./pics/dbw-node-ros-graph.png)
+
+The dbw_node subscribes to the `/current_velocity` topic along with the `/twist_cmd` topic to receive target linear and angular velocities. Additionally, this node will subscribe to `/vehicle/dbw_enabled`, which indicates if the car is under dbw or driver control. This node will publish throttle, brake, and steering commands to the `/vehicle/throttle_cmd, /vehicle/brake_cmd, and /vehicle/steering_cmd` topics.
+
+### Team approach
+
+The team followed the implementation approach suggested by Udacity:
+
+1. **Waypoint Updater Node (Partial)**: Complete a partial waypoint updater which subscribes to `/base_waypoints` and `/current_pose` and publishes to `/final_waypoints`.
+2. **DBW Node**: Once your waypoint updater is publishing `/final_waypoints`, the `waypoint_follower` node will start publishing messages to the `/twist_cmd` topic. At this point, you have everything needed to build the `dbw_node`. After completing this step, the car should drive in the simulator, ignoring the traffic lights.
+3. **Traffic Light Detection**: This can be split into 2 parts:
+* *Detection*: Detect the traffic light and its color from the `/image_color`. The topic `/vehicle/traffic_lights` contains the exact location and status of all traffic lights in simulator, so you can test your output.
+* *Waypoint publishing*: Once you have correctly identified the traffic light and determined its position, you can convert it to a waypoint index and publish it.
+4. **Waypoint Updater (Full)**: Use `/traffic_waypoint` to change the waypoint target velocities before publishing to `/final_waypoints`. Your car should now stop at red traffic lights and move when they are green.
+
+## Simulator Test Procedure
+
+Following requirements must be fulfilled in the simulator.
+
+1. The `launch/styx.launch` and `launch/site.launch` files are used to test code in the simulator and on the vehicle respectively.
+2. Smoothly follow waypoints in the simulator.
+3. Respect the target top speed set for the waypoints' `twist.twist.linear.x` in `waypoint_loader.py`. The vehicle adheres to the kph target top speed set in `waypoint_loader/launch/waypoint_loader`.launch.
+4. Stop at traffic lights when needed.
+5. Stop and restart PID controllers depending on the state of /vehicle/dbw_enabled.
+6. Publish throttle, steering, and brake commands at 50hz.
+
+##  Environment 
 
 Please use **one** of the two installation options, either native **or** docker installation.
 
@@ -89,3 +146,9 @@ cd CarND-Capstone/ros
 roslaunch launch/site.launch
 ```
 5. Confirm that traffic light detection works on real life images
+
+You can setup and run the implementation 
+
+### Introduction Video
+
+Udacity Self-Driving Car Nanodegree: Programming a Real Self-Driving Car. For more information about the project, see the project introduction [here](https://classroom.udacity.com/nanodegrees/nd013/parts/6047fe34-d93c-4f50-8336-b70ef10cb4b2/modules/e1a23b06-329a-4684-a717-ad476f0d8dff/lessons/462c933d-9f24-42d3-8bdc-a08a5fc866e4/concepts/5ab4b122-83e6-436d-850f-9f4d26627fd9).
