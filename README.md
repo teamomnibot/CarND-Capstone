@@ -1,11 +1,25 @@
-## Team Omnibot
-> members:
+
+# Team Omnibot
+
+This is the **system integration** project repo of Team Omnibot programming a real self-driving car. Boilerplate code and instructions from [Udacity: CarND-Capstone](https://github.com/udacity/CarND-Capstone). Team members are from July 2017 cohort accomplishing the final term 3 project due May 21st, 2018. 
+
+> The team has following members:
+
+| Markdown | Less | Pretty |
+--- | --- | ---
+*Still* | `renders` | **nicely**
+1 | 2 | 3
+
 
 * @nery_henrique Planning: Waypoint Updater
 * @sdominic Control: DBW Node
 * @davinderc Perception: TL Classifier
 * @keithlee Perception: TL Detector
-* @tochalid Repo: Integration
+* @tochalid Repo: Integration2
+
+
+
+
 
 ### updates will follow soon
 
