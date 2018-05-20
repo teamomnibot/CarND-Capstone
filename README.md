@@ -1,6 +1,8 @@
 
 # Team Omnibot
 
+**Udacity Self-Driving Car Nanodegree: Programming a Real Self-Driving Car.**
+
 This is the **system integration** project repo of Team Omnibot programming a real self-driving car. Boilerplate code and instructions from [Udacity: CarND-Capstone](https://github.com/udacity/CarND-Capstone). Team members are from July 2017 cohort accomplishing the final term 3 project due May 21st, 2018. 
 
 ## Project Team
@@ -61,7 +63,32 @@ The team followed the implementation approach suggested by Udacity:
 * *Waypoint publishing*: Once you have correctly identified the traffic light and determined its position, you can convert it to a waypoint index and publish it.
 4. **Waypoint Updater (Full)**: Use `/traffic_waypoint` to change the waypoint target velocities before publishing to `/final_waypoints`. Your car should now stop at red traffic lights and move when they are green.
 
-## Simulator Test Procedure
+## Testing
+
+The system is tested in the simulator and after deployed to a car. The real-world testing provides ROS bag information that can be analyzed offline for optimizatin purpose.
+
+### Usage with Simulator
+
+1. Clone the project repository
+```bash
+git clone https://github.com/udacity/CarND-Capstone.git
+```
+
+2. Install python dependencies
+```bash
+cd CarND-Capstone
+pip install -r requirements.txt
+```
+3. Make and run styx
+```bash
+cd ros
+catkin_make
+source devel/setup.sh
+roslaunch launch/styx.launch
+```
+4. Run the simulator
+
+### Simulator Test Requirements
 
 Following requirements must be fulfilled in the simulator.
 
@@ -72,7 +99,25 @@ Following requirements must be fulfilled in the simulator.
 5. Stop and restart PID controllers depending on the state of /vehicle/dbw_enabled.
 6. Publish throttle, steering, and brake commands at 50hz.
 
-## Using ROS Bag Feedback for Optimization
+### Real world testing
+
+1. Download [training bag](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/traffic_light_bag_file.zip) that was recorded on the Udacity self-driving car.
+2. Unzip the file
+```bash
+unzip traffic_light_bag_file.zip
+```
+3. Play the bag file
+```bash
+rosbag play -l traffic_light_bag_file/traffic_light_training.bag
+```
+4. Launch your project in site mode
+```bash
+cd CarND-Capstone/ros
+roslaunch launch/site.launch
+```
+5. Confirm that traffic light detection works on real life images
+
+### Using ROS Bag Feedback for Optimization
 
 To replay the ROS bag, use the following steps:
 
@@ -87,6 +132,7 @@ To replay the ROS bag, use the following steps:
 * [Tensorflow Object Detection](https://github.com/tensorflow/models/tree/master/research/object_detection/g3doc)
 * [Github Commands](https://help.github.com/articles/adding-a-file-to-a-repository-using-the-command-line/)
 * [ROS Bags](http://wiki.ros.org/Bags)
+* [Udacity Introduction Video](https://classroom.udacity.com/nanodegrees/nd013/parts/6047fe34-d93c-4f50-8336-b70ef10cb4b2/modules/e1a23b06-329a-4684-a717-ad476f0d8dff/lessons/462c933d-9f24-42d3-8bdc-a08a5fc866e4/concepts/5ab4b122-83e6-436d-850f-9f4d26627fd9)
 
 ##  Environment 
 
@@ -124,47 +170,3 @@ docker run -p 4567:4567 -v $PWD:/capstone -v /tmp/log:/root/.ros/ --rm -it capst
 
 ### Port Forwarding
 To set up port forwarding, please refer to the [instructions from term 2](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/16cf4a78-4fc7-49e1-8621-3450ca938b77)
-
-### Usage
-
-1. Clone the project repository
-```bash
-git clone https://github.com/udacity/CarND-Capstone.git
-```
-
-2. Install python dependencies
-```bash
-cd CarND-Capstone
-pip install -r requirements.txt
-```
-3. Make and run styx
-```bash
-cd ros
-catkin_make
-source devel/setup.sh
-roslaunch launch/styx.launch
-```
-4. Run the simulator
-
-### Real world testing
-1. Download [training bag](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/traffic_light_bag_file.zip) that was recorded on the Udacity self-driving car.
-2. Unzip the file
-```bash
-unzip traffic_light_bag_file.zip
-```
-3. Play the bag file
-```bash
-rosbag play -l traffic_light_bag_file/traffic_light_training.bag
-```
-4. Launch your project in site mode
-```bash
-cd CarND-Capstone/ros
-roslaunch launch/site.launch
-```
-5. Confirm that traffic light detection works on real life images
-
-You can setup and run the implementation 
-
-### Introduction Video
-
-Udacity Self-Driving Car Nanodegree: Programming a Real Self-Driving Car. For more information about the project, see the project introduction [here](https://classroom.udacity.com/nanodegrees/nd013/parts/6047fe34-d93c-4f50-8336-b70ef10cb4b2/modules/e1a23b06-329a-4684-a717-ad476f0d8dff/lessons/462c933d-9f24-42d3-8bdc-a08a5fc866e4/concepts/5ab4b122-83e6-436d-850f-9f4d26627fd9).
