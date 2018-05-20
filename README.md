@@ -7,7 +7,7 @@ This is the **system integration** project repo of Team Omnibot programming a re
 
 |Name|Github|Contribution|Email
 |---|---|---|--- 
-|Henrique Nery (TL)|[nery_henrique@hotmail.com](https://github.com/nery_henrique@hotmail.com)|Waypointer|
+|Henrique Nery (TL)|[@nery_henrique](https://github.com/nery_henrique)|Waypointer|nery_henrique@hotmail.com
 |Dominic S|[@sdshdomi](https://github.com/sdshdomi)|DBW Node|
 |Davinder Chandhok|[@davinderc](https://github.com/davinderc)|Classifier|davinder.sc1@gmail.com
 |Keith Lee| [@TonyLee33063](https://github.com/TonyLee33063)|Detector|
@@ -72,11 +72,21 @@ Following requirements must be fulfilled in the simulator.
 5. Stop and restart PID controllers depending on the state of /vehicle/dbw_enabled.
 6. Publish throttle, steering, and brake commands at 50hz.
 
+## Using ROS Bag Feedback for Optimization
+
+To replay the ROS bag, use the following steps:
+
+* Download the [rviz config file](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/default.rviz).
+* Open a terminal and start `roscore`.
+* Open another terminal, run `rosbag play -l <path_to_your.bag>`
+* Open one more terminal and run `rviz`. You can change the RViz configuration to the Udacity download by navigating to your config file from `File > Open Config` in RViz. Alternatively, if you'd like to make the Udacity config file your default, you can replace the rviz config file found in `~/.rviz/default.rviz`.
+
 ## Further Used References
 
 * [Traffic Light Detection and Classification](https://medium.com/@UdacityINDIA/self-driving-vehicles-traffic-light-detection-and-classification-with-tensorflow-object-detection-d6a4d25e99c2)
 * [Tensorflow Object Detection](https://github.com/tensorflow/models/tree/master/research/object_detection/g3doc)
 * [Github Commands](https://help.github.com/articles/adding-a-file-to-a-repository-using-the-command-line/)
+* [ROS Bags](http://wiki.ros.org/Bags)
 
 ##  Environment 
 
