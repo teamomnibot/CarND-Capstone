@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <launch>
+    <param name="/sim_true"     value="false" />
+
     <!--DBW Node -->
     <include file="$(find twist_controller)/launch/dbw.launch"/>
 

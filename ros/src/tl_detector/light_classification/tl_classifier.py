@@ -2,10 +2,13 @@ from styx_msgs.msg import TrafficLight
 import numpy as np
 import tensorflow as tf
 from datetime import datetime as dt
+import rospy
 
 class TLClassifier(object):
-    def __init__(self, sim_true):
+    def __init__(self):
         #TODO load classifier
+
+        sim_true                 = rospy.get_param('/sim_true')
 
         self.thresh = 0.65
 
@@ -16,9 +19,9 @@ class TLClassifier(object):
         self.graph = tf.Graph()
         
         
-        with graph.as_default():
+        with self.graph.as_default():
             new_graph_def = tf.GraphDef()
-            with tf.gfile.GFile(graph_file, 'rb') as fid:
+            with tf.gfile.GFile(GRAPH_PATH, 'rb') as fid:
                 serialized_graph = fid.read()
                 new_graph_def.ParseFromString(serialized_graph)
                 tf.import_graph_def(new_graph_def, name='')
