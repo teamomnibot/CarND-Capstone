@@ -5,21 +5,13 @@ This is the **system integration** project repo of Team Omnibot programming a re
 
 > The team has following members:
 
-| Markdown | Less | Pretty |
---- | --- | ---
-*Still* | `renders` | **nicely**
-1 | 2 | 3
-
-
-* @nery_henrique Planning: Waypoint Updater
-* @sdominic Control: DBW Node
-* @davinderc Perception: TL Classifier
-* @keithlee Perception: TL Detector
-* @tochalid Repo: Integration2
-
-
-
-
+|Name|Github|Contribution
+|---|---|--- 
+|Henrique (TL)|[@nery_henrique]()|Waypointer
+|Dominic|[@sdominic](https://github.com/sdominic)|DBW Node
+|Davinder Chandhok|[@davinderc](https://github.com/davinderc)|Classifier
+|Keith Lee| [@keithlee](https://github.com/keithlee)|Detector
+|Chalid Mannaa|[@tochalid](https://github.com/tochalid)|Integration
 
 ### updates will follow soon
 
