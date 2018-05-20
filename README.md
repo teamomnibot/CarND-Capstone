@@ -24,7 +24,7 @@ The goal is to implement different ROS nodes for core functionality of the auton
 
 ![Image](./pics/system.png)
 
-The system architecture consists of Perception, Planning and Control nodes that communicate via function calls. All code base can be found in the source folder `(path_to_project_repo)/ros/src/` and improvements where made to following files:
+The system architecture consists of **Perception, Planning and Control** nodes that communicate via function calls. All code base can be found in the source folder `(path_to_project_repo)/ros/src/` and improvements where made to following files:
 
 - `tl_detector/tl_detector.py`
 - `tl_detector/light_classification_model/tl_classfier.py`
