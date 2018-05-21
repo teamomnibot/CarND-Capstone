@@ -10,9 +10,9 @@ This is the **system integration** project repo of Team Omnibot programming a re
 |Name|Github|Contribution|Email
 |---|---|---|--- 
 |Henrique Nery (TL)|[@nery_henrique](https://github.com/nery_henrique)|Waypointer|nery.henrique@gmail.com
-|Dominic S|[@sdshdomi](https://github.com/sdshdomi)|DBW Node|shane.dominic@toyota-motorsport.com
+|Shane Dominic|[@sdshdomi](https://github.com/sdshdomi)|DBW Node|shane.dominic@toyota-motorsport.com
 |Davinder Chandhok|[@davinderc](https://github.com/davinderc)|Classifier|davinder.sc1@gmail.com
-|Keith Lee| [@TonyLee33063](https://github.com/TonyLee33063)|Detector|
+|Keith Lee| [@TonyLee33063](https://github.com/TonyLee33063)|Detector|lixiaoma218@126.com
 |Chalid Mannaa|[@tochalid](https://github.com/tochalid)|Integration|tochalid@gmail.com
 
 ## Project Goal
