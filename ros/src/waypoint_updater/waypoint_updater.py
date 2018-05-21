@@ -7,6 +7,9 @@ from scipy.spatial import KDTree
 import numpy as np
 import math
 
+from std_msgs.msg import Int32
+
+
 '''
 This node will publish waypoints from the car's current position to some `x` distance ahead.
 
@@ -23,45 +26,120 @@ TODO (for Yousuf and Aaron): Stopline location for each traffic light.
 '''
 
 LOOKAHEAD_WPS = 50 #200 # Number of waypoints we will publish. You can change this number
+MAX_DECEL = .5
 
 
 class WaypointUpdater(object):
     def __init__(self):
+        rospy.init_node('waypoint_updater')
+
+        # DONE: Add other member variables you need below
+        self.base_lane = None
+        self.pose = None
+        self.stopline_wp_idx = -1
+        self.waypoints = None
+        self.waypoint_tree = None
+        #self.actual_index = 0
+
         rospy.Subscriber('/current_pose', PoseStamped, self.pose_cb)
         rospy.Subscriber('/base_waypoints', Lane, self.waypoints_cb)
-
-        # TODO: Add a subscriber for /traffic_waypoint and /obstacle_waypoint below
-
+        # DONE: Add a subscriber for /traffic_waypoint and /obstacle_waypoint below
+        rospy.Subscriber('/traffic_waypoint', Int32, self.traffic_cb)
+        #rospy.Subscriber('/obstacle_waypoint', Int32, self.obstacle_cb)
 
         self.final_waypoints_pub = rospy.Publisher('final_waypoints', Lane, queue_size=1)
 
-        # TODO: Add other member variables you need below
+        self.loop()
+        # rospy.Timer(rospy.Duration(0.02), self.update_waypoints_cb)
 
-        self.actual_pose = None
-        self.base_lane_waypoints = None
-        self.waypoints = None
-        self.waypoint_tree = None
-        self.actual_index = 0
+    # DONE: Get waypoints at 50 Hz
+    def loop(self):
+        rate = rospy.Rate(50)
+        while not rospy.is_shutdown():
+            if self.pose and self.base_lane:
+                self.publish_waypoints()
+            rate.sleep()
 
-        rospy.Timer(rospy.Duration(0.02), self.update_waypoints_cb)
+    # DONE
+    def get_closest_waypoint_idx(self):
+        x = self.pose.pose.position.x
+        y = self.pose.pose.position.y
+        closest_idx = self.waypoint_tree.query([x,y],1)[1]
 
-        
+        # Check if closest is ahead or behind
+        closest_coord = self.waypoints[closest_idx]
+        prev_coord = self.waypoints[closest_idx-1]
+
+        # Equation for hyperplane through closest_coords
+        cl_vect = np.array(closest_coord)
+        prev_vect = np.array(prev_coord)
+        pos_vect = np.array([x,y])
+
+        val = np.dot(cl_vect-prev_vect, pos_vect-cl_vect)
+
+        if val > 0:
+            closest_idx = (closest_idx+1) % len(self.waypoints)
+        return closest_idx
+
+    # DONE
+    def publish_waypoints(self):
+        final_lane = self.generate_lane()
+        self.final_waypoints_pub.publish(final_lane)
+
+    # DONE
+    def generate_lane(self):
+        lane = Lane()
+
+        closest_idx = self.get_closest_waypoint_idx()
+        farthest_idx = closest_idx + LOOKAHEAD_WPS
+        base_waypoints = self.base_lane.waypoints[closest_idx:farthest_idx]
+
+        if self.stopline_wp_idx == -1 or (self.stopline_wp_idx >= farthest_idx):
+            lane.waypoints = base_waypoints
+            rospy.logwarn("Keeping the speed up!")
+
+        else:
+            lane.waypoints = self.decelerate_waypoints(base_waypoints, closest_idx)
+            rospy.logwarn("Decelerating !")
+
+        return lane
+
+    # DONE
+    # TODO: use linear instead of sqrt
+    # TODO: slice the list to prevent latency if list is long while enumerating
+    def decelerate_waypoints(self, waypoints, closest_idx):
+        temp = []
+        for i, wp in enumerate(waypoints[:-1][::-1]):
+            p = Waypoint()
+            p.pose = wp.pose
+
+            stop_idx = max(self.stopline_wp_idx-closest_idx-3,0) # 3 points back from line so car stops before line
+            dist = self.distance(waypoints,i,stop_idx)
+            vel = math.sqrt(2*MAX_DECEL*dist)
+            if vel < 1.:
+                vel = 0.
+
+            p.twist.twist.linear.x = min(vel,wp.twist.twist.linear.x)
+            temp.append(p)
+        rospy.logwarn("Temp waypoints appended!")
+        return temp
+
 
     def pose_cb(self, msg):
         # Just update the internal pose variable with the latest
-        self.actual_pose = msg
-
+        self.pose = msg
 
     def waypoints_cb(self, msg):
-        # Get the base waypoints, this is just updated once by the publisher
-        self.base_lane_waypoints = msg
-        self.waypoints = [[waypoint.pose.pose.position.x, waypoint.pose.pose.position.y] for waypoint in msg.waypoints ]
-        self.waypoint_tree = KDTree(self.waypoints)
-        rospy.logwarn("Base waypoints Loaded!")
+        # DONE: Get the base waypoints, this is just updated once by the publisher
+        self.base_lane = msg
+        if not self.waypoints:
+            self.waypoints = [[waypoint.pose.pose.position.x, waypoint.pose.pose.position.y] for waypoint in msg.waypoints ]
+            self.waypoint_tree = KDTree(self.waypoints)
+            rospy.logwarn("Base waypoints loaded 4!")
 
     def traffic_cb(self, msg):
-        # TODO: Callback for /traffic_waypoint message. Implement
-        pass
+        self.stopline_wp_idx = msg.data
+        rospy.logwarn("Traffic stopper loaded!")
 
     def obstacle_cb(self, msg):
         # TODO: Callback for /obstacle_waypoint message. We will implement it later
@@ -81,34 +159,17 @@ class WaypointUpdater(object):
             wp1 = i
         return dist
 
-    def get_closest_waypoint_index(self):
-        #maybe this function can be enhanced searching from the last waypoint
-        #index = self.actual_index
-        #for i in range(len(self.waypoints)):
-
-        actual_pose = [self.actual_pose.pose.position.x,self.actual_pose.pose.position.y]
-        index = self.waypoint_tree.query(actual_pose,1)[1]
-
-        closest = np.array(self.waypoints[index])
-        prev_closest = np.array(self.waypoints[index-1])
-        actual_pose = np.array(actual_pose)
-
-        if np.dot(closest-prev_closest,actual_pose-closest) > 0:
-            return (index+1)%len(self.waypoints)
-        return index
-
-
+'''
     def update_waypoints_cb(self,event):
         if self.waypoint_tree and self.actual_pose:
 
-            self.actual_index = self.get_closest_waypoint_index()
+            self.actual_index = self.get_closest_waypoint_idx()
 
             msg = Lane()
             msg.header = self.base_lane_waypoints.header
             msg.waypoints = self.base_lane_waypoints.waypoints[self.actual_index:self.actual_index+LOOKAHEAD_WPS]
             self.final_waypoints_pub.publish(msg)
-
-
+'''
 
 if __name__ == '__main__':
     try:
