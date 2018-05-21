@@ -55,9 +55,9 @@ class TLDetector(object):
     def pose_cb(self, msg):
         self.pose = msg
 
-    def waypoints_cb(self, waypoints):
-        self.waypoints = waypoints
-        self.waypoints_vector = [[waypoint.pose.pose.position.x, waypoint.pose.pose.position.y] for waypoint in waypoints.waypoints ]
+    def waypoints_cb(self, msg):
+        self.waypoints = msg
+        self.waypoints_vector = [[waypoint.pose.pose.position.x, waypoint.pose.pose.position.y] for waypoint in msg.waypoints ]
         self.waypoint_tree = KDTree(self.waypoints_vector)
         rospy.logwarn("Base waypoints loaded in tl_detector!")
 
