@@ -7,6 +7,7 @@ from styx_msgs.msg import Lane
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 from light_classification.tl_classifier import TLClassifier
+from scipy.spatial import KDTree
 import tf
 import cv2
 import yaml
@@ -56,7 +57,7 @@ class TLDetector(object):
 
     def waypoints_cb(self, waypoints):
         self.waypoints = waypoints
-        self.waypoints_vector = [[waypoint.pose.pose.position.x, waypoint.pose.pose.position.y] for waypoint in msg.waypoints ]
+        self.waypoints_vector = [[waypoint.pose.pose.position.x, waypoint.pose.pose.position.y] for waypoint in waypoints ]
         self.waypoint_tree = KDTree(self.waypoints_vector)
         rospy.logwarn("Base waypoints loaded in tl_detector!")
 
