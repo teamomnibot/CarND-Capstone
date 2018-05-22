@@ -72,15 +72,15 @@ class Controller(object):
             self.throttle_ctrl.reset()
             throttle = 0.0
             brake = MAX_BRAKE
-        # To speed up
-        elif desired_accel > 0.0:
-            throttle = desired_accel
-            brake = 0.0
         # To slow down
         elif desired_accel < 0.1 and vel_error < 0:
             throttle = 0.0
             decel = max(vel_error, self.decel_limit)
             brake = min(MAX_BRAKE, (abs(decel) * self.torque_constant))
+        # To speed up
+        else: 
+            throttle = desired_accel
+            brake = 0.0
 
         # Return values
         return throttle, brake, steering
