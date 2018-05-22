@@ -96,7 +96,7 @@ class WaypointUpdater(object):
 
         if self.stopline_wp_idx == -1 or (self.stopline_wp_idx >= farthest_idx):
             lane.waypoints = base_waypoints
-            rospy.logwarn("Keeping the speed up! stopline_wp_idx %d | stopline>fatherst %b"%(self.stopline_wp_idx, self.stopline_wp_idx >= farthest_idx) )
+            rospy.logwarn("Keeping the speed up! stopline_wp_idx %d | stopline>fatherst %d"%(self.stopline_wp_idx, self.stopline_wp_idx >= farthest_idx) )
 
         else:
             lane.waypoints = self.decelerate_waypoints(base_waypoints, closest_idx)
@@ -139,7 +139,7 @@ class WaypointUpdater(object):
 
     def traffic_cb(self, msg):
         self.stopline_wp_idx = msg.data
-        rospy.logwarn("Traffic stopper loaded!")
+        rospy.logwarn("Traffic callback -> %d "%msg.data)
 
     def obstacle_cb(self, msg):
         # TODO: Callback for /obstacle_waypoint message. We will implement it later
