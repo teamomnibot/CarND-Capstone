@@ -23,8 +23,11 @@ class TLDetector(object):
 
         self.pose = None
         self.waypoints = None
+        self.waypoint_tree = None
         self.camera_image = None
         self.lights = []
+
+
 
 
 
@@ -53,7 +56,7 @@ class TLDetector(object):
         rely on the position of the light and the camera image to predict it.
         '''
         rospy.Subscriber('/vehicle/traffic_lights', TrafficLightArray, self.traffic_cb)
-        rospy.Subscriber('/image_color', Image, self.image_cb)
+        
 
         rospy.spin()
 
@@ -64,7 +67,9 @@ class TLDetector(object):
         self.waypoints = msg
         self.waypoints_vector = [[waypoint.pose.pose.position.x, waypoint.pose.pose.position.y] for waypoint in msg.waypoints ]
         self.waypoint_tree = KDTree(self.waypoints_vector)
+
         rospy.logwarn("Base waypoints loaded in tl_detector!")
+        rospy.Subscriber('/image_color', Image, self.image_cb)
 
     def traffic_cb(self, msg):
         self.lights = msg.lights
