@@ -42,7 +42,7 @@ class Controller(object):
         # Set-up the low pass filter for velocity
         self.vel_lpf = LowPassFilter(tau = 0.5, ts = 0.02)
 
-    # Get the time stamp
+        # Get the time stamp
         self.last_time = rospy.get_time()
 
         
