@@ -16,6 +16,15 @@ class TLClassifier(object):
             GRAPH_PATH = r'light_classification/model/inf_graph_sim.pb'
         else:
             GRAPH_PATH = r'light_classification/model/inf_graph_udacity.pb'
+
+        #------------ Uncomment these one at a time to test each of the models ---------------#
+        #             We need to see how well they each detect traffic lights                 #
+
+        #GRAPH_PATH = r'light_classification/model/frozen_inference_22175.pb'
+        #GRAPH_PATH = r'light_classification/model/frozen_inference_24330.pb'
+        #GRAPH_PATH = r'light_classification/model/frozen_inference_26484.pb'
+        #GRAPH_PATH = r'light_classification/model/frozen_inference_28639.pb'
+
         self.graph = tf.Graph()
         
         
