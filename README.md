@@ -122,7 +122,7 @@ There are two findings for further optimization:
 
 [Model 2 Video](.vids/vokoscreen-2018-05-26_10-40-32_graph_sim_new.mkv)
 
-4. This video shows 2min test lot riding circles with Model 1.
+4. This video shows 2min test lot riding 7 circles.
 
 [Test Lot Video](.vids/vids/vokoscreen-2018-05-26_14-51-08.mkv)
 
