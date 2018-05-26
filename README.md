@@ -124,7 +124,7 @@ There are two findings for further optimization:
 
 4. This video shows 2min test lot riding 7 circles.
 
-[Test Lot Video](./vids/vids/vokoscreen-2018-05-26_14-51-08.mkv)
+[Test Lot Video](./vids/vokoscreen-2018-05-26_14-51-08.mkv)
 
 
 
