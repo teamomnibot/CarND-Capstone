@@ -117,9 +117,16 @@ There are two findings for further optimization:
 
 [Model 1 Video](.vids/vokoscreen-2018-05-26_10-40-32_graph_sim.mkv)
 
-3. This video shows 7min test ride using a [**more complex FCN**](ros/src/tl_detector/light_classification/model/inf_graph_sim_new.pb) to classify traffic light state.
+3. This video shows 7min test ride using a [**more complex FCN**](ros/src/tl_detector/light_classification/model/inf_graph_sim_new.pb) to classify traffic light state
+
 
 [Model 2 Video](.vids/vokoscreen-2018-05-26_10-40-32_graph_sim_new.mkv)
+
+4. This video shows 2min test lot riding circles with Model 1.
+
+[Test Lot Video](.vids/vids/vokoscreen-2018-05-26_14-51-08.mkv)
+
+
 
 ### Real world testing
 
