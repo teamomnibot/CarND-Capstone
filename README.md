@@ -54,9 +54,9 @@ The `dbw_node` subscribes to the `/current_velocity` topic along with the `/twis
 
 ### Team approach
 
-![Image](./pics/node-interaction.png)
-
 Node Interaction Diagram using ROS Framework Features
+
+![Image](./pics/node-interaction.png)
 
 The team followed the implementation approach suggested by Udacity:
 
