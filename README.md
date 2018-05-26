@@ -109,18 +109,15 @@ There are two findings for further optimization:
 * The performance of the traffic light detector FCN is relevant for the overall performance of the vehicle to master the test course. A compute intensive FCN (Perception) impacts the other components (Planning, Controller) -> design least complex model with highest accuracy, depending on available HW make a balanced trade-off
 * The isolated controller component seems sufficient but the PID can be improved. -> test and optimize the 3 throttle params Kp=.5, Ki=.005, Kd=.0 in [twist_controller.py](./ros/src/twist_controller/twist_controller.py) depending on waypointer implementation and available HW
 
-#### Reference Video
-This video shows 7min the ref test ride with setting the light.state from simulator in file [tl_detector.py -> get_light_state](./ros/src/tl_detector/tl_detector.py).
+This video shows 7min the **ref test ride** with setting the light.state from simulator in file [tl_detector.py -> get_light_state](./ros/src/tl_detector/tl_detector.py).
 
 [Reference Video](./vids/vokoscreen-2018-05-26_10-21-36_light.state.mkv)
 
-#### Model 1 - simpler
-This video shows 7min test ride using a simpler FCN to classify traffic light state.
+This video shows 7min test ride using a [**simpler FCN**](./ros/src/tl_detector/light_classification/model/inf_graph_sim.pb) to classify traffic light state.
 
 [Model 1 Video](.vids/vokoscreen-2018-05-26_10-40-32_graph_sim.mkv)
 
-#### Model 2 - more complex
-This video shows 7min test ride using a more complex FCN to classify traffic light state.
+This video shows 7min test ride using a [**more complex FCN**](ros/src/tl_detector/light_classification/model/inf_graph_sim_new.pb) to classify traffic light state.
 
 [Model 2 Video](.vids/vokoscreen-2018-05-26_10-40-32_graph_sim_new.mkv)
 
