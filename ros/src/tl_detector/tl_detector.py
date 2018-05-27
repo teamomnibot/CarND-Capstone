@@ -95,19 +95,19 @@ class TLDetector(object):
             self.has_image = True
             self.camera_image = msg
             light_wp, state = self.process_traffic_lights()
-            if state == 4:  rospy.logwarn("processed image! light_WP: %d, state: UNKNOWN"%(light_wp))
-            if state == 2:  rospy.logwarn("processed image! light_WP: %d, state: GREEN"%(light_wp))
-            if state == 1:  rospy.logwarn("processed image! light_WP: %d, state: YELLOW"%(light_wp))
-            if state == 0:  rospy.logwarn("processed image! light_WP: %d, state: RED"%(light_wp))
-
+            
             '''
             Publish upcoming red lights at camera frequency.
             Each predicted state has to occur `STATE_COUNT_THRESHOLD` number
             of times till we start using it. Otherwise the previous stable state is
             used.
             '''
-            if len(self.state_vector)>STATE_VECTOR_SIZE: self.state_vector.pop(0)
 
+
+
+
+            
+            if len(self.state_vector)>STATE_VECTOR_SIZE: self.state_vector.pop(0)
             self.state_vector.append(state)
 
             C = collections.Counter(self.state_vector)
@@ -118,10 +118,22 @@ class TLDetector(object):
                     frequency = C[state]
                     k_state = state
 
-            if frequency> STATE_COUNT_THRESHOLD:
-                self.upcoming_red_light_pub.publish(Int32(k_state))
+            #print self.state_vector, C, frequency, k_state
+
+            if frequency> STATE_COUNT_THRESHOLD and k_state == TrafficLight.RED:
+                if self.last_wp== -1:
+                    rospy.logwarn("state: STOP")
+                    self.last_wp = light_wp
+                
             else:
-                self.upcoming_red_light_pub.publish(Int32(TrafficLight.UNKNOWN))
+                if self.last_wp!= -1: 
+                    rospy.logwarn("state: GO")
+                self.last_wp = -1
+
+
+            self.upcoming_red_light_pub.publish(Int32(self.last_wp))
+            
+
 
             '''
             if self.state != state:
@@ -136,6 +148,7 @@ class TLDetector(object):
                 self.upcoming_red_light_pub.publish(Int32(self.last_wp))
             self.state_count += 1
             '''
+            
 
         self.counter_frames +=1
 

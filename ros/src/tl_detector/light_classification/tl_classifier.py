@@ -22,6 +22,7 @@ class TLClassifier(object):
 
 
         if sim_true:
+            #GRAPH_PATH = working_dir + '/model/alex_sim_model2.pb'
             GRAPH_PATH = working_dir + '/model/inf_graph_sim.pb'
         else:
             GRAPH_PATH = working_dir + '/model/inf_graph_udacity.pb'
@@ -36,7 +37,6 @@ class TLClassifier(object):
         #GRAPH_PATH = r'light_classification/model/frozen_inference_28639.pb'
 
         self.graph = tf.Graph()
-        
         
         with self.graph.as_default():
             new_graph_def = tf.GraphDef()
