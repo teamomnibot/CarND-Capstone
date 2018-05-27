@@ -39,11 +39,11 @@ class TLClassifier(object):
                 new_graph_def.ParseFromString(serialized_graph)
                 tf.import_graph_def(new_graph_def, name='')
             
-        self.image_tensor = self.graph.get_tensor_by_name('image_tensor:0')
-        self.boxes = self.graph.get_tensor_by_name('detection_boxes:0')
-        self.scores = self.graph.get_tensor_by_name('detection_scores:0')
-        self.classes = self.graph.get_tensor_by_name('detection_classes:0')
-        self.num_detections = self.graph.get_tensor_by_name('num_detections:0')
+            self.image_tensor = self.graph.get_tensor_by_name('image_tensor:0')
+            self.boxes = self.graph.get_tensor_by_name('detection_boxes:0')
+            self.scores = self.graph.get_tensor_by_name('detection_scores:0')
+            self.classes = self.graph.get_tensor_by_name('detection_classes:0')
+            self.num_detections = self.graph.get_tensor_by_name('num_detections:0')
             
         self.sess = tf.Session(graph=self.graph)
 
@@ -75,6 +75,10 @@ class TLClassifier(object):
         boxes = np.squeeze(boxes)
         scores = np.squeeze(scores)
         classes = np.squeeze(classes).astype(np.int32)
+        rospy.logwarn("scores: ")
+        rospy.logwarn(scores[0])
+        rospy.logwarn("classes: ")
+        rospy.logwarn(classes[0])
         
         if(scores[0] > self.thresh):
             if(classes[0] == 1):
