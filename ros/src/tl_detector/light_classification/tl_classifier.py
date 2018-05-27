@@ -3,6 +3,7 @@ import numpy as np
 import tensorflow as tf
 from datetime import datetime as dt
 import rospy
+import os
 
 class TLClassifier(object):
     def __init__(self):
@@ -11,11 +12,13 @@ class TLClassifier(object):
         sim_true                 = rospy.get_param('/sim_true')
 
         self.thresh = 0.65
+        working_dir = os.path.dirname(os.path.realpath(__file__))
+
 
         if sim_true:
-            GRAPH_PATH = r'light_classification/model/inf_graph_sim.pb'
+            GRAPH_PATH = working_dir + '/model/inf_graph_sim.pb'
         else:
-            GRAPH_PATH = r'light_classification/model/inf_graph_udacity.pb'
+            GRAPH_PATH = working_dir + '/model/inf_graph_udacity.pb'
         rospy.logwarn("using %s"%GRAPH_PATH)
 
         #------------ Uncomment these one at a time to test each of the models ---------------#
@@ -57,6 +60,8 @@ class TLClassifier(object):
         #TODO implement light color prediction
         #  Check what the styx_msgs/TrafficLight msg should look like to 
         #  create the correct output
+
+        rospy.logwarn(image.shape)
         
         with self.graph.as_default():
             img_expand = np.expand_dims(image, axis=0)
