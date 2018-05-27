@@ -16,6 +16,7 @@ class TLClassifier(object):
             GRAPH_PATH = r'light_classification/model/inf_graph_sim.pb'
         else:
             GRAPH_PATH = r'light_classification/model/inf_graph_udacity.pb'
+        rospy.logwarn("using %s"%GRAPH_PATH)
 
         #------------ Uncomment these one at a time to test each of the models ---------------#
         #             We need to see how well they each detect traffic lights                 #
@@ -64,11 +65,12 @@ class TLClassifier(object):
                 [self.boxes, self.scores, self.classes, self.num_detections], feed_dict={self.image_tensor: img_expand})
             end = dt.now()
             duration = end - start
-            print(duration.total_seconds())
+            #print "duration of image classification: ", duration.total_seconds()
         
         boxes = np.squeeze(boxes)
         scores = np.squeeze(scores)
         classes = np.squeeze(classes).astype(np.int32)
+        print scores 
         
         if(scores[0] > self.thresh):
             if(classes[0] == 1):

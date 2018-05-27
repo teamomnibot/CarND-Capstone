@@ -19,7 +19,7 @@ class TLDetector(object):
         rospy.init_node('tl_detector')
 
         self.counter_frames=0
-        self.ignore_frames=2
+        self.ignore_frames=1
 
         self.pose = None
         self.waypoints = None
@@ -82,15 +82,19 @@ class TLDetector(object):
             msg (Image): image from car-mounted camera
 
         """
-        rospy.logwarn("image callback")
+        #rospy.logwarn("image callback")
         if self.counter_frames> self.ignore_frames: self.counter_frames=0
 
         if self.counter_frames==0:
-            rospy.logwarn("processed image!")
+            
         
             self.has_image = True
             self.camera_image = msg
             light_wp, state = self.process_traffic_lights()
+            if state == 4:  rospy.logwarn("processed image! light_WP: %d, state: UNKNOWN"%(light_wp))
+            if state == 2:  rospy.logwarn("processed image! light_WP: %d, state: GREEN"%(light_wp))
+            if state == 1:  rospy.logwarn("processed image! light_WP: %d, state: YELLOW"%(light_wp))
+            if state == 0:  rospy.logwarn("processed image! light_WP: %d, state: RED"%(light_wp))
 
             '''
             Publish upcoming red lights at camera frequency.
@@ -148,6 +152,9 @@ class TLDetector(object):
             return False
 
         cv_image = self.bridge.imgmsg_to_cv2(self.camera_image, "bgr8")
+
+        #cv2.imshow("image",cv_image)
+        #cv2.waitKey(0)
 
         #Get classification
         return self.light_classifier.get_classification(cv_image)
