@@ -4,6 +4,9 @@ import tensorflow as tf
 from datetime import datetime as dt
 import rospy
 import os
+from sensor_msgs.msg import Image
+from cv_bridge import CvBridge
+import cv2
 
 class TLClassifier(object):
     def __init__(self):
@@ -11,7 +14,10 @@ class TLClassifier(object):
 
         sim_true                 = rospy.get_param('/sim_true')
 
-        self.thresh = 0.65
+        self.bridge = CvBridge()
+        self.debug_image_pub = rospy.Publisher('/classified_image', Image, queue_size=1)
+
+        self.thresh = 0.5
         working_dir = os.path.dirname(os.path.realpath(__file__))
 
 
@@ -39,13 +45,13 @@ class TLClassifier(object):
                 new_graph_def.ParseFromString(serialized_graph)
                 tf.import_graph_def(new_graph_def, name='')
             
-        self.image_tensor = self.graph.get_tensor_by_name('image_tensor:0')
-        self.boxes = self.graph.get_tensor_by_name('detection_boxes:0')
-        self.scores = self.graph.get_tensor_by_name('detection_scores:0')
-        self.classes = self.graph.get_tensor_by_name('detection_classes:0')
-        self.num_detections = self.graph.get_tensor_by_name('num_detections:0')
+            self.image_tensor = self.graph.get_tensor_by_name('image_tensor:0')
+            self.boxes = self.graph.get_tensor_by_name('detection_boxes:0')
+            self.scores = self.graph.get_tensor_by_name('detection_scores:0')
+            self.classes = self.graph.get_tensor_by_name('detection_classes:0')
+            self.num_detections = self.graph.get_tensor_by_name('num_detections:0')
             
-        self.sess = tf.Session(graph=self.graph)
+            self.sess = tf.Session(graph=self.graph)
 
     def get_classification(self, image):
         """Determines the color of the traffic light in the image
@@ -61,7 +67,7 @@ class TLClassifier(object):
         #  Check what the styx_msgs/TrafficLight msg should look like to 
         #  create the correct output
 
-        rospy.logwarn(image.shape)
+        #rospy.logwarn(image.shape)
         
         with self.graph.as_default():
             img_expand = np.expand_dims(image, axis=0)
@@ -75,7 +81,35 @@ class TLClassifier(object):
         boxes = np.squeeze(boxes)
         scores = np.squeeze(scores)
         classes = np.squeeze(classes).astype(np.int32)
-        print scores 
+        #rospy.logwarn("scores and classes: ")
+        #rospy.logwarn(scores[:3])
+        #rospy.logwarn(classes[:3])
+
+        h,w,d = image.shape
+        #print h,w,d
+
+
+        for k in range(len(boxes)):
+            if scores[k]> 0.02:
+
+                y1 = int(boxes[k][0]*h)
+                x1 = int(boxes[k][1]*w)
+                y2 = int(boxes[k][2]*h)
+                x2 = int(boxes[k][3]*w)
+
+                c = (255,255,255)
+                if (classes[k] == 2): c = (0,0,255)
+                if (classes[k] == 1): c = (0,255,0)
+                if (classes[k] == 3): c = (0,255,255)
+
+
+                cv2.rectangle(image, (x1, y1), (x2, y2), (255,0,0), 2)
+                #t = str(classes[k])+"|"+str(int(scores[k]*100))
+                t = str(int(scores[k]*100))#+"%"
+                cv2.putText(image,t,(x1,y1), cv2.FONT_HERSHEY_SIMPLEX, 0.5,c,2,cv2.LINE_AA)
+
+
+        self.debug_image_pub.publish(self.bridge.cv2_to_imgmsg(image, encoding="bgr8"))
         
         if(scores[0] > self.thresh):
             if(classes[0] == 1):

@@ -11,7 +11,10 @@ from scipy.spatial import KDTree
 import tf
 import cv2
 import yaml
+import collections
 
+
+STATE_VECTOR_SIZE = 6
 STATE_COUNT_THRESHOLD = 3
 
 class TLDetector(object):
@@ -26,6 +29,7 @@ class TLDetector(object):
         self.waypoint_tree = None
         self.camera_image = None
         self.lights = []
+        self.state_vector = []
 
 
 
@@ -102,6 +106,24 @@ class TLDetector(object):
             of times till we start using it. Otherwise the previous stable state is
             used.
             '''
+            if len(self.state_vector)>STATE_VECTOR_SIZE: self.state_vector.pop(0)
+
+            self.state_vector.append(state)
+
+            C = collections.Counter(self.state_vector)
+            k_state = -1
+            frequency = -1
+            for state in C:
+                if (C[state]> frequency):
+                    frequency = C[state]
+                    k_state = state
+
+            if frequency> STATE_COUNT_THRESHOLD:
+                self.upcoming_red_light_pub.publish(Int32(k_state))
+            else:
+                self.upcoming_red_light_pub.publish(Int32(TrafficLight.UNKNOWN))
+
+            '''
             if self.state != state:
                 self.state_count = 0
                 self.state = state
@@ -113,6 +135,7 @@ class TLDetector(object):
             else:
                 self.upcoming_red_light_pub.publish(Int32(self.last_wp))
             self.state_count += 1
+            '''
 
         self.counter_frames +=1
 
