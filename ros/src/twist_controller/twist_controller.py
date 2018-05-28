@@ -7,8 +7,8 @@ GAS_DENSITY = 2.858
 ONE_MPH = 0.44704
 
 # Controller parameters for throttle control
-KP_THROTTLE = 0.5
-KI_THROTTLE = 0.005
+KP_THROTTLE = 0.8
+KI_THROTTLE = 0.002
 KD_THROTTLE = 0.0
 
 # Maximum brake torque
@@ -44,8 +44,6 @@ class Controller(object):
 
         # Get the time stamp
         self.last_time = rospy.get_time()
-
-        pass
 
     def control(self, current_vel, dbw_enabled, target_vel, target_angular_vel):
         # TODO: Change the arg, kwarg list to suit your needs

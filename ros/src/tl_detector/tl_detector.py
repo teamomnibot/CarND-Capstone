@@ -119,9 +119,8 @@ class TLDetector(object):
                     frequency = C[state]
                     k_state = state
 
+
             #print self.state_vector, C, frequency, k_state
-
-
             if frequency> STATE_COUNT_THRESHOLD:
                 if ((k_state == TrafficLight.RED) or (k_state == TrafficLight.YELLOW)):
                     if self.last_wp== -1:
@@ -140,11 +139,6 @@ class TLDetector(object):
                     rospy.logwarn("timeout reach!")
                     rospy.logwarn("state: GO")
                     self.last_wp = -1
-
-
-
-            #TODO: create a timeout in case it enter in a deadlock
-
 
             self.upcoming_red_light_pub.publish(Int32(self.last_wp))
             

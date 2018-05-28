@@ -10,20 +10,20 @@ import cv2
 
 class TLClassifier(object):
     def __init__(self):
-        #TODO load classifier
+        #load classifier
 
         sim_true                 = rospy.get_param('/sim_true')
 
         self.bridge = CvBridge()
         self.debug_image_pub = rospy.Publisher('/classified_image', Image, queue_size=1)
 
-        self.thresh = 0.5
+        self.thresh = 0.30
         working_dir = os.path.dirname(os.path.realpath(__file__))
 
 
         if sim_true:
-            #GRAPH_PATH = working_dir + '/model/alex_sim_model2.pb'
-            GRAPH_PATH = working_dir + '/model/inf_graph_sim.pb'
+            GRAPH_PATH = working_dir + '/model/frozen_inf_vatsal5k.pb'
+            #GRAPH_PATH = working_dir + '/model/inf_graph_sim.pb'
         else:
             GRAPH_PATH = working_dir + '/model/inf_graph_udacity.pb'
         rospy.logwarn("using %s"%GRAPH_PATH)

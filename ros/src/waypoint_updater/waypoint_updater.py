@@ -26,7 +26,7 @@ TODO (for Yousuf and Aaron): Stopline location for each traffic light.
 '''
 
 LOOKAHEAD_WPS = 50 #200 # Number of waypoints we will publish. You can change this number
-MAX_DECEL = .5
+MAX_DECEL = .75
 
 
 class WaypointUpdater(object):
@@ -39,6 +39,7 @@ class WaypointUpdater(object):
         self.stopline_wp_idx = -1
         self.waypoints = None
         self.waypoint_tree = None
+        self.initialized = False
         #self.actual_index = 0
 
         self.final_waypoints_pub = rospy.Publisher('final_waypoints', Lane, queue_size=1)
@@ -86,7 +87,10 @@ class WaypointUpdater(object):
     # DONE
     def publish_waypoints(self):
         final_lane = self.generate_lane()
-        self.final_waypoints_pub.publish(final_lane)
+        if self.initialized:
+            self.final_waypoints_pub.publish(final_lane)
+        else:
+            rospy.logwarn("waiting camera feed to start")
 
     # DONE
     def generate_lane(self):
@@ -142,6 +146,7 @@ class WaypointUpdater(object):
 
     def traffic_cb(self, msg):
         self.stopline_wp_idx = msg.data
+        self.initialized = True
         #rospy.logwarn("Traffic callback -> %d "%msg.data)
 
     def obstacle_cb(self, msg):
