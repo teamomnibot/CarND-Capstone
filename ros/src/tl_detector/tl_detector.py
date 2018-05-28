@@ -12,6 +12,7 @@ import tf
 import cv2
 import yaml
 import collections
+from datetime import datetime as dt
 
 
 STATE_VECTOR_SIZE = 6
@@ -120,15 +121,29 @@ class TLDetector(object):
 
             #print self.state_vector, C, frequency, k_state
 
-            if frequency> STATE_COUNT_THRESHOLD and k_state == TrafficLight.RED:
-                if self.last_wp== -1:
-                    rospy.logwarn("state: STOP")
-                    self.last_wp = light_wp
-                
-            else:
-                if self.last_wp!= -1: 
+
+            if frequency> STATE_COUNT_THRESHOLD:
+                if ((k_state == TrafficLight.RED) or (k_state == TrafficLight.YELLOW)):
+                    if self.last_wp== -1:
+                        rospy.logwarn("state: STOP")
+                        self.last_wp = light_wp
+                        self.timeout_start_time = dt.now()
+
+                elif (k_state == TrafficLight.GREEN):
+                    if self.last_wp != -1: 
+                        rospy.logwarn("state: GO")
+                        self.last_wp = -1
+
+            if self.last_wp != -1:
+                rospy.logwarn("timeout time %f"%(dt.now() - self.timeout_start_time).total_seconds())
+                if ((dt.now() - self.timeout_start_time).total_seconds() > 20):
+                    rospy.logwarn("timeout reach!")
                     rospy.logwarn("state: GO")
-                self.last_wp = -1
+                    self.last_wp = -1
+
+
+
+            #TODO: create a timeout in case it enter in a deadlock
 
 
             self.upcoming_red_light_pub.publish(Int32(self.last_wp))
