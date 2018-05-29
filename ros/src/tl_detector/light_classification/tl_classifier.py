@@ -13,16 +13,20 @@ class TLClassifier(object):
         #load classifier
 
         sim_true                 = rospy.get_param('/sim_true')
+        self.debug = False
 
         self.bridge = CvBridge()
-        self.debug_image_pub = rospy.Publisher('/classified_image', Image, queue_size=1)
 
-        self.thresh = 0.30
+        if self.debug==True:
+            self.debug_image_pub = rospy.Publisher('/classified_image', Image, queue_size=1)
+
+        self.thresh = 0.20
         working_dir = os.path.dirname(os.path.realpath(__file__))
 
 
         if sim_true:
-            GRAPH_PATH = working_dir + '/model/frozen_inf_vatsal5k.pb'
+            GRAPH_PATH = working_dir + '/model/frozen_inf_vatsal5kPlus2k.pb'
+            #GRAPH_PATH = working_dir + '/model/frozen_inf_vatsal5k.pb'
             #GRAPH_PATH = working_dir + '/model/inf_graph_sim.pb'
         else:
             GRAPH_PATH = working_dir + '/model/inf_graph_udacity.pb'
@@ -89,27 +93,28 @@ class TLClassifier(object):
         #print h,w,d
 
 
-        for k in range(len(boxes)):
-            if scores[k]> 0.02:
+        if self.debug==True:
+            for k in range(len(boxes)):
+                if scores[k]> 0.02:
 
-                y1 = int(boxes[k][0]*h)
-                x1 = int(boxes[k][1]*w)
-                y2 = int(boxes[k][2]*h)
-                x2 = int(boxes[k][3]*w)
+                    y1 = int(boxes[k][0]*h)
+                    x1 = int(boxes[k][1]*w)
+                    y2 = int(boxes[k][2]*h)
+                    x2 = int(boxes[k][3]*w)
 
-                c = (255,255,255)
-                if (classes[k] == 2): c = (0,0,255)
-                if (classes[k] == 1): c = (0,255,0)
-                if (classes[k] == 3): c = (0,255,255)
-
-
-                cv2.rectangle(image, (x1, y1), (x2, y2), (255,0,0), 2)
-                #t = str(classes[k])+"|"+str(int(scores[k]*100))
-                t = str(int(scores[k]*100))#+"%"
-                cv2.putText(image,t,(x1,y1), cv2.FONT_HERSHEY_SIMPLEX, 0.5,c,2,cv2.LINE_AA)
+                    c = (255,255,255)
+                    if (classes[k] == 2): c = (0,0,255)
+                    if (classes[k] == 1): c = (0,255,0)
+                    if (classes[k] == 3): c = (0,255,255)
 
 
-        self.debug_image_pub.publish(self.bridge.cv2_to_imgmsg(image, encoding="bgr8"))
+                    cv2.rectangle(image, (x1, y1), (x2, y2), (255,0,0), 2)
+                    #t = str(classes[k])+"|"+str(int(scores[k]*100))
+                    t = str(int(scores[k]*100))#+"%"
+                    cv2.putText(image,t,(x1,y1), cv2.FONT_HERSHEY_SIMPLEX, 0.5,c,2,cv2.LINE_AA)
+
+
+            self.debug_image_pub.publish(self.bridge.cv2_to_imgmsg(image, encoding="bgr8"))
         
         if(scores[0] > self.thresh):
             if(classes[0] == 1):
