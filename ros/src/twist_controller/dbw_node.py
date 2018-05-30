@@ -93,7 +93,7 @@ class DBWNode(object):
             # If autonomous system is enabled
             if self.dbw_enabled and (self.current_vel is not None) and (self.target_vel is not None) and (
                 self.target_angular_vel is not None):
-                self.throttle, self.brake, self.steering = self.controller.control(self.current_vel, self.dbw_enabled,
+                self.throttle, self.brake, self.steering = self.controller.control(self.current_vel,
                                                                                    self.target_vel,
                                                                                    self.target_angular_vel)
                 self.publish(self.throttle, self.brake, self.steering)
@@ -101,7 +101,8 @@ class DBWNode(object):
 
     def dbw_enabled_cb(self, msg):
         # Get the driving mode
-        self.dbw_enabled = msg
+        self.controller.reset()
+        self.dbw_enabled = msg.data
         if self.dbw_enabled:
             rospy.logwarn('TwistController is online.')
         else:
@@ -109,8 +110,10 @@ class DBWNode(object):
 
     def twist_cmd_cb(self, msg):
         # Get the desired velocity
+
         self.target_vel = msg.twist.linear.x
         self.target_angular_vel = msg.twist.angular.z
+        #rospy.logwarn("target_vel %f"%self.target_vel)
 
     def current_velocity_cb(self, msg):
         # Get current velocity

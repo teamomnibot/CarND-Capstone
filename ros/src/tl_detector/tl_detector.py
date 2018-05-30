@@ -134,7 +134,7 @@ class TLDetector(object):
                         self.last_wp = -1
 
             if self.last_wp != -1:
-                rospy.logwarn("timeout time %f"%(dt.now() - self.timeout_start_time).total_seconds())
+                #rospy.logwarn("timeout time %f"%(dt.now() - self.timeout_start_time).total_seconds())
                 if ((dt.now() - self.timeout_start_time).total_seconds() > 20):
                     rospy.logwarn("timeout reach!")
                     rospy.logwarn("state: GO")

@@ -7,8 +7,8 @@ GAS_DENSITY = 2.858
 ONE_MPH = 0.44704
 
 # Controller parameters for throttle control
-KP_THROTTLE = 0.8
-KI_THROTTLE = 0.002
+KP_THROTTLE = 1.0
+KI_THROTTLE = 0.1
 KD_THROTTLE = 0.0
 
 # Maximum brake torque
@@ -45,12 +45,12 @@ class Controller(object):
         # Get the time stamp
         self.last_time = rospy.get_time()
 
-    def control(self, current_vel, dbw_enabled, target_vel, target_angular_vel):
-        # TODO: Change the arg, kwarg list to suit your needs
-        # If twist controller is disabled
-        if not dbw_enabled:
-            self.throttle_ctrl.reset()
-            return 0.0, 0.0, 0.0
+    def reset(self):
+        self.throttle_ctrl.reset()
+
+
+
+    def control(self, current_vel, target_vel, target_angular_vel):
 
         # Check sample time
         current_time = rospy.get_time()
@@ -70,6 +70,7 @@ class Controller(object):
             self.throttle_ctrl.reset()
             throttle = 0.0
             brake = MAX_BRAKE
+
         # To slow down
         elif desired_accel < 0.1 and vel_error < 0:
             throttle = 0.0

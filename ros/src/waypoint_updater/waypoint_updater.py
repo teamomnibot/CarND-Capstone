@@ -90,7 +90,7 @@ class WaypointUpdater(object):
         if self.initialized:
             self.final_waypoints_pub.publish(final_lane)
         else:
-            rospy.logwarn("waiting camera feed to start")
+            rospy.logwarn("waiting camera feed to start.. until then do not calculate path...")
 
     # DONE
     def generate_lane(self):
@@ -146,7 +146,9 @@ class WaypointUpdater(object):
 
     def traffic_cb(self, msg):
         self.stopline_wp_idx = msg.data
-        self.initialized = True
+        if self.initialized==False:
+            self.initialized = True
+            rospy.logwarn("All nodes initialized! Start calculating path..")
         #rospy.logwarn("Traffic callback -> %d "%msg.data)
 
     def obstacle_cb(self, msg):
